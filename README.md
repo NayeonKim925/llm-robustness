@@ -53,6 +53,10 @@ the positive results. That story is written up in
 
 ## Results at a glance
 
+> 📓 For the full guided tour — data, results, the bug diagnosis, and
+> significance tests, all rendered inline — see
+> **[`notebooks/00_results.ipynb`](notebooks/00_results.ipynb)**.
+
 All figures are regenerated from the committed prediction dumps with
 `make figures` (colour-blind-safe palette; training regime also encoded by line
 style so identity never rests on colour alone).
@@ -113,7 +117,7 @@ llm-robustness/
 │   ├── build_dataset.py / analyze_results.py / make_figures.py / significance.py  (CPU)
 │   ├── run_finetune.py / run_eval.py / run_calibration.py   (GPU)
 ├── tests/                        # unit tests (labels, metrics) + conftest bootstrap
-├── notebooks/                    # original exploratory notebooks (record of work)
+├── notebooks/                    # 00_results.ipynb (guided tour) + exploratory record
 ├── results/                      # distilled metrics + raw prediction dumps
 │   └── raw_predictions/          #   the GPU-produced prediction files
 ├── figures/                      # generated plots
