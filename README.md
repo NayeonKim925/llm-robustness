@@ -48,6 +48,21 @@ the positive results. That story is written up in
 
 ---
 
+## Results at a glance
+
+All figures are regenerated from the committed prediction dumps with
+`make figures` (colour-blind-safe palette; training regime also encoded by line
+style so identity never rests on colour alone).
+
+| | |
+|---|---|
+| ![Accuracy across conditions](figures/robustness_by_condition.png) | ![Lexical distractor effect](figures/adversarial_lexical_effect.png) |
+| **Accuracy across the six context conditions.** Adversarial-FT models stay flat and above the majority baseline; zero-shot 3B dips under the `lexical` distractor. | **The adversarial lexical distractor** hurts zero-shot 3B (0.628→0.598) but not adversarial-FT (0.825→0.851). |
+| ![Per-class F1](figures/per_class_f1_heatmap.png) | ![Reliability, flawed pipeline](figures/reliability_original_flawed.png) |
+| **Per-class F1.** The majority class `comment` is learned (F1 ≈ 0.90); minority stances stay weak — an honest limitation. | **Reliability diagram of the *original, flawed* confidence pipeline** — confidence far exceeds accuracy (ECE ≈ 0.80). Kept only to document the artifact (see [Bugs found and fixed](#bugs-found-and-fixed-why-the-calibration-numbers-changed)). |
+
+---
+
 ## Research question & experimental design
 
 **Does adding context to a stance classifier help, and does *adversarial*

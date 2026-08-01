@@ -128,73 +128,6 @@ def write_baseline_table(all_cls: dict, out_dir: str) -> str:
     return path
 
 
-def make_figures(all_cls: dict, all_conf: dict, fig_dir: str) -> list:
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-    except Exception as e:  # pragma: no cover
-        print(f"[figures] matplotlib unavailable ({e}); skipping figures.")
-        return []
-
-    made = []
-
-    # 1) Accuracy vs majority baseline, per model, reply_only condition.
-    models = list(all_cls.keys())
-    accs = [all_cls[m].get("reply_only", {}).get("accuracy", 0) for m in models]
-    majs = [all_cls[m].get("reply_only", {}).get("baseline_majority_acc", 0) for m in models]
-    fig, ax = plt.subplots(figsize=(7, 4))
-    x = range(len(models))
-    ax.bar([i - 0.2 for i in x], accs, width=0.4, label="model")
-    ax.bar([i + 0.2 for i in x], majs, width=0.4, label="majority baseline")
-    ax.set_xticks(list(x))
-    ax.set_xticklabels(models, rotation=20, ha="right", fontsize=8)
-    ax.set_ylabel("accuracy (reply_only)")
-    ax.set_title("Models collapse below the majority-class baseline")
-    ax.legend()
-    fig.tight_layout()
-    p = os.path.join(fig_dir, "accuracy_vs_baseline.png")
-    fig.savefig(p, dpi=130)
-    plt.close(fig)
-    made.append(p)
-
-    # 2) Prediction distribution (class collapse) for the first model.
-    m0 = models[0]
-    dist = all_cls[m0].get("reply_only", {}).get("pred_distribution", {})
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar(list(dist.keys()), list(dist.values()), color="#c0392b")
-    ax.set_ylabel("# predictions")
-    ax.set_title(f"Prediction collapse ({m0}, reply_only)\n"
-                 f"comment is ~80% of gold but is never predicted")
-    fig.tight_layout()
-    p = os.path.join(fig_dir, "prediction_collapse.png")
-    fig.savefig(p, dpi=130)
-    plt.close(fig)
-    made.append(p)
-
-    # 3) Reliability diagram for a confidence dump (flagged as flawed).
-    if all_conf:
-        name, conf = next(iter(all_conf.items()))
-        bins = conf.get("reply_only", {}).get("reliability_bins", [])
-        if bins:
-            fig, ax = plt.subplots(figsize=(5, 5))
-            ax.plot([0, 1], [0, 1], "--", color="gray", label="perfect calibration")
-            ax.plot([b["avg_confidence"] for b in bins],
-                    [b["accuracy"] for b in bins], "o-", label="observed")
-            ax.set_xlabel("confidence")
-            ax.set_ylabel("accuracy")
-            ax.set_xlim(0, 1)
-            ax.set_ylim(0, 1)
-            ax.set_title(f"Reliability diagram\n{name} (reply_only) -- ORIGINAL FLAWED pipeline")
-            ax.legend()
-            fig.tight_layout()
-            p = os.path.join(fig_dir, "reliability_original_flawed.png")
-            fig.savefig(p, dpi=130)
-            plt.close(fig)
-            made.append(p)
-    return made
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results-dir", default="results")
@@ -246,7 +179,8 @@ def main() -> None:
 
     print(f"\nWrote: {table}")
     if not args.no_figures:
-        for p in make_figures(all_cls, all_conf, args.figures_dir):
+        from llm_robustness import viz
+        for p in viz.make_all(args.results_dir, args.figures_dir):
             print(f"Wrote figure: {p}")
 
 

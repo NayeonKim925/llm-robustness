@@ -10,7 +10,9 @@ help:
 	@echo "Targets:"
 	@echo "  setup      pip install -r requirements.txt"
 	@echo "  dataset    build context_conditions.json from raw data (CPU)"
-	@echo "  analyze    recompute metrics + baselines + figures from dumps (CPU)"
+	@echo "  analyze    recompute metrics + baselines from dumps (CPU)"
+	@echo "  figures    render result figures from the analysis JSON (CPU)"
+	@echo "  significance  paired McNemar tests across conditions (CPU)"
 	@echo "  test       run unit tests (CPU)"
 	@echo "  train      LoRA fine-tune (GPU)   e.g. make train OUT=result/qwen_1.5b_ft"
 	@echo "  eval       generation eval (GPU)  e.g. make eval MODEL=Qwen/Qwen2.5-3B-Instruct OUT=results/eval.json"
@@ -24,6 +26,12 @@ dataset:
 
 analyze:
 	$(PY) scripts/analyze_results.py
+
+figures:
+	$(PY) scripts/make_figures.py
+
+significance:
+	$(PY) scripts/significance.py
 
 test:
 	$(PY) -m pytest tests/ -q
