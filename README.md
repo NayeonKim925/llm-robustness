@@ -93,20 +93,23 @@ llm-robustness/
 ├── README.md                     # this file
 ├── requirements.txt              # pinned dependency ranges
 ├── Makefile                      # reproducible entry points
+├── pyproject.toml                # installable package + split extras (viz/gpu/dev)
 ├── configs/experiment.yaml       # all paths, hyper-params, seed
 ├── src/llm_robustness/           # importable package (single source of truth)
 │   ├── labels.py                 #   robust, deterministic label parsing
-│   ├── metrics.py                #   F1 / accuracy / baselines / ECE  (pure stdlib)
+│   ├── metrics.py                #   F1 / accuracy / baselines / ECE / McNemar  (pure stdlib)
 │   ├── data.py                   #   RumourEval parsing + 6 conditions
 │   ├── prompts.py                #   chat formatting (train == inference)
+│   ├── report.py                 #   baseline-anchored analysis of the dumps  (CPU)
+│   ├── viz.py                    #   result figures  (CPU)
+│   ├── cli.py                    #   console entry points (llmr-analyze, …)
 │   ├── evaluate.py               #   generation eval  (GPU)
 │   ├── calibrate.py              #   corrected calibration  (GPU)
 │   └── train.py                  #   LoRA SFT + class-imbalance handling  (GPU)
-├── scripts/                      # thin CLIs over the package
-│   ├── build_dataset.py          #   raw trees -> context_conditions.json  (CPU)
-│   ├── analyze_results.py        #   dumps -> tables + figures  (CPU)
+├── scripts/                      # thin wrappers over the package entry points
+│   ├── build_dataset.py / analyze_results.py / make_figures.py / significance.py  (CPU)
 │   ├── run_finetune.py / run_eval.py / run_calibration.py   (GPU)
-├── tests/                        # unit tests for labels + metrics  (CPU)
+├── tests/                        # unit tests (labels, metrics) + conftest bootstrap
 ├── notebooks/                    # original exploratory notebooks (record of work)
 ├── results/                      # distilled metrics + raw prediction dumps
 │   └── raw_predictions/          #   the GPU-produced prediction files
@@ -122,15 +125,19 @@ them is.
 
 ## Reproducing
 
-CPU-only steps need just `PyYAML` + `matplotlib`; training/eval need a CUDA GPU.
+The project is an installable package with **split extras**, so a laptop pulls
+only light deps and the CUDA box opts into the heavy ones:
 
 ```bash
-make setup        # pip install -r requirements.txt
+pip install -e ".[viz,dev]"     # CPU: analysis, figures, tests (this is `make setup`)
+pip install -e ".[viz,dev,gpu]" # + torch/transformers/peft/trl for training
 
 # --- CPU, no GPU required ---
 make test         # unit tests for label parsing + metrics
-make dataset      # rebuild context_conditions.json from the raw corpus
-make analyze      # recompute all metrics/baselines/figures from the dumps
+make dataset      # rebuild context_conditions.json from the raw corpus  (llmr-dataset)
+make analyze      # recompute all metrics/baselines from the dumps        (llmr-analyze)
+make figures      # render result figures                                (llmr-figures)
+make significance # paired McNemar tests across conditions                (llmr-significance)
 
 # --- GPU ---
 make train  OUT=result/qwen_1.5b_ft                        # standard LoRA SFT
@@ -141,8 +148,9 @@ make calibrate MODEL=Qwen/Qwen2.5-1.5B-Instruct \
        ADAPTER=result/qwen_1.5b_ft/final OUT=results/cal_1.5b_ft.json
 ```
 
-Everything is seeded (`configs/experiment.yaml: seed`) and paths are
-configurable — no hard-coded home directories.
+Once installed, the CPU tools are also on your `PATH` as `llmr-analyze`,
+`llmr-figures`, etc. Everything is seeded (`configs/experiment.yaml: seed`) and
+paths are configurable — no hard-coded home directories, no `sys.path` hacks.
 
 ## Data
 

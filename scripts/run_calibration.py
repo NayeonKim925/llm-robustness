@@ -14,13 +14,9 @@ Example::
 from __future__ import annotations
 
 import argparse
-import os
-import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-
-from llm_robustness.config import Config  # noqa: E402
-from llm_robustness import calibrate  # noqa: E402
+from llm_robustness.config import Config
+from llm_robustness import calibrate
 
 
 def main() -> None:

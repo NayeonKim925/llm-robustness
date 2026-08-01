@@ -1,5 +1,5 @@
 {
-  "qwen1.5b_ft": {
+  "qwen_1.5b_ft_ORIGINAL_FLAWED": {
     "reply_only_vs_useful": {
       "b": 175,
       "c": 63,
@@ -36,7 +36,7 @@
       "method": "chi2_continuity"
     }
   },
-  "qwen1.5b_adv": {
+  "qwen_1.5b_adv_ORIGINAL_FLAWED": {
     "reply_only_vs_useful": {
       "b": 297,
       "c": 550,

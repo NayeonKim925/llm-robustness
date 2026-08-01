@@ -1,20 +1,8 @@
-# Core analysis (CPU, no GPU needed) -- build_dataset.py, analyze_results.py,
-# and the pure-stdlib metrics all run with just these.
-PyYAML>=6.0
-matplotlib>=3.7        # figures only; analysis degrades gracefully without it
+# The canonical dependency spec is pyproject.toml (with split extras).
+# This file exists only so `pip install -r requirements.txt` works; it installs
+# the package in editable mode with the CPU extras.
+#
+#   CPU (analysis, figures, tests):   pip install -e ".[viz,dev]"
+#   GPU (training/eval/calibration):  pip install -e ".[viz,dev,gpu]"
 
-# Model training / evaluation / calibration (GPU recommended).
-# Pin ranges that are known to work with the Qwen2.5 LoRA setup used here.
-torch>=2.1
-transformers>=4.44
-datasets>=2.19
-peft>=0.11
-trl>=0.9
-accelerate>=0.30
-
-# Optional, for a nicer analysis / notebook experience.
-numpy>=1.24
-scikit-learn>=1.3
-
-# Dev / testing.
-pytest>=7.0
+-e .[viz,dev]

@@ -8,7 +8,7 @@ CONFIG ?= configs/experiment.yaml
 
 help:
 	@echo "Targets:"
-	@echo "  setup      pip install -r requirements.txt"
+	@echo "  setup      pip install -e .[viz,dev]  (CPU) ; add ,gpu on a CUDA box"
 	@echo "  dataset    build context_conditions.json from raw data (CPU)"
 	@echo "  analyze    recompute metrics + baselines from dumps (CPU)"
 	@echo "  figures    render result figures from the analysis JSON (CPU)"
@@ -19,7 +19,7 @@ help:
 	@echo "  calibrate  calibration (GPU)      e.g. make calibrate MODEL=... ADAPTER=... OUT=results/cal.json"
 
 setup:
-	$(PY) -m pip install -r requirements.txt
+	$(PY) -m pip install -e ".[viz,dev]"
 
 dataset:
 	$(PY) scripts/build_dataset.py
