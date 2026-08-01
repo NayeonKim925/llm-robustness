@@ -24,13 +24,22 @@ import os
 from collections import Counter
 from typing import List
 
-from . import prompts
+from . import data, prompts
 from .config import Config, set_seed
 
 
-def _load_split(conditions_file: str, split: str) -> List[dict]:
-    with open(conditions_file) as f:
-        return [d for d in json.load(f) if d["split"] == split]
+def _load_fit_rows(cfg: Config) -> List[dict]:
+    """Training rows = the `fit` portion of a thread-level train/val split.
+
+    The `val` portion (and the `dev`/test split) are held out. See
+    ``data.train_val_split`` for why the partition is by thread, not by reply.
+    """
+    with open(cfg.conditions_file) as f:
+        full = json.load(f)
+    fit, val = data.train_val_split(full, cfg.val_fraction, cfg.seed)
+    print(f"train/val split (seed {cfg.seed}): fit={len(fit)} rows, "
+          f"val held out={len(val)} rows")
+    return fit
 
 
 def _build_examples(rows: List[dict], cfg: Config, tokenizer) -> List[dict]:
@@ -72,7 +81,7 @@ def train(cfg: Config, output_dir: str) -> str:
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    rows = _load_split(cfg.conditions_file, cfg.train_split)
+    rows = _load_fit_rows(cfg)
     examples = _build_examples(rows, cfg, tokenizer)
     print(f"train examples: {len(examples)} | label balance: "
           f"{dict(Counter(e['label'] for e in examples))}")

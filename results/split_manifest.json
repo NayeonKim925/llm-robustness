@@ -1,0 +1,35 @@
+{
+  "seed": 42,
+  "val_fraction": 0.1,
+  "note": "test == the RumourEval dev split (held out); fit/val are a thread-level partition of train to avoid context leakage.",
+  "fit": {
+    "n": 4468,
+    "n_threads": 293,
+    "labels": {
+      "comment": 3236,
+      "deny": 315,
+      "support": 568,
+      "query": 349
+    }
+  },
+  "val": {
+    "n": 422,
+    "n_threads": 33,
+    "labels": {
+      "comment": 272,
+      "query": 24,
+      "deny": 52,
+      "support": 74
+    }
+  },
+  "test": {
+    "n": 1447,
+    "n_threads": 38,
+    "labels": {
+      "comment": 1181,
+      "deny": 79,
+      "support": 73,
+      "query": 114
+    }
+  }
+}

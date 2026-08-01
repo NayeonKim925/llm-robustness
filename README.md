@@ -136,8 +136,9 @@ pip install -e ".[viz,dev]"     # CPU: analysis, figures, tests (this is `make s
 pip install -e ".[viz,dev,gpu]" # + torch/transformers/peft/trl for training
 
 # --- CPU, no GPU required ---
-make test         # unit tests for label parsing + metrics
+make test         # unit tests for labels, metrics, and the split (no leakage)
 make dataset      # rebuild context_conditions.json from the raw corpus  (llmr-dataset)
+make splits       # emit the deterministic train/val/test manifest       (llmr-splits)
 make analyze      # recompute all metrics/baselines from the dumps        (llmr-analyze)
 make figures      # render result figures                                (llmr-figures)
 make significance # paired McNemar tests across conditions                (llmr-significance)
@@ -200,6 +201,11 @@ evidence about model calibration.
 - The `lexical` condition is **label-aware** (it uses the gold stance to pick a
   contradicting sentence), so it is a controlled stress test, not a realistic
   attack.
+- Evaluation uses the RumourEval `dev` split as the held-out **test** set; a
+  thread-level `val` split (`make splits`) is carved from `train` for model
+  selection (see [methodology](docs/methodology.md#data-splits-train--validation--test)).
+  The official RumourEval *test* set is not bundled; drop it in and evaluate with
+  `--split test` for an additional external check.
 - The corrected `calibrate.py` has not yet been re-run on GPU here, so the
   corrected calibration table is left to be filled in — see
   [`docs/findings.md`](docs/findings.md).

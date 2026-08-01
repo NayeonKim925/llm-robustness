@@ -35,6 +35,7 @@ Repository = "https://github.com/NayeonKim925/llm-robustness"
 # Console entry points -> run the pipeline without `python scripts/...`.
 [project.scripts]
 llmr-dataset = "llm_robustness.cli:build_dataset_main"
+llmr-splits = "llm_robustness.cli:splits_main"
 llmr-analyze = "llm_robustness.cli:analyze_main"
 llmr-figures = "llm_robustness.cli:figures_main"
 llmr-significance = "llm_robustness.cli:significance_main"

@@ -27,7 +27,8 @@ class Config:
     data_root: str = "rumoureval-2019-training-data"
     conditions_file: str = "rumoureval-2019-training-data/context_conditions.json"
     train_split: str = "train"
-    eval_split: str = "dev"
+    eval_split: str = "dev"        # the RumourEval dev split is our held-out TEST
+    val_fraction: float = 0.1      # thread-level validation carved from `train`
 
     # model / training
     base_model: str = "Qwen/Qwen2.5-1.5B-Instruct"

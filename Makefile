@@ -10,6 +10,7 @@ help:
 	@echo "Targets:"
 	@echo "  setup      pip install -e .[viz,dev]  (CPU) ; add ,gpu on a CUDA box"
 	@echo "  dataset    build context_conditions.json from raw data (CPU)"
+	@echo "  splits     emit deterministic train/val/test manifest (CPU)"
 	@echo "  analyze    recompute metrics + baselines from dumps (CPU)"
 	@echo "  figures    render result figures from the analysis JSON (CPU)"
 	@echo "  significance  paired McNemar tests across conditions (CPU)"
@@ -24,6 +25,9 @@ setup:
 
 dataset:
 	$(PY) scripts/build_dataset.py
+
+splits:
+	$(PY) scripts/make_splits.py
 
 analyze:
 	$(PY) scripts/analyze_results.py

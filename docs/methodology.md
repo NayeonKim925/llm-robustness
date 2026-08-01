@@ -61,6 +61,31 @@ attack.
   the softmax over the four label tokens' next-token logits at the generation
   position (`calibrate.py`), using the **in-context (leading-space)** token ids.
 
+## Data splits (train / validation / test)
+
+RumourEval ships `train` and `dev` key files (the separate official *test* set
+is released later and is not included here). The protocol is:
+
+| Fold | Source | Role | n | threads |
+|---|---|---|---|---|
+| `fit` | `train` minus `val` | fit LoRA adapters | 4,468 | 293 |
+| `val` | thread-level slice of `train` | model/checkpoint selection | 422 | 33 |
+| `test` | the `dev` split | final reporting, touched once | 1,447 | 38 |
+
+The split is produced deterministically by `data.train_val_split`
+(`make splits` → `results/split_manifest.json`) and is **thread-level, not
+example-level**. This matters here specifically: the context conditions splice
+in text from *other replies in the same thread*, so an example-level split would
+leak that context from `fit` into `val`. Splitting whole threads (seeded shuffle,
+`val_fraction=0.1`) removes that path; `test_data.py` asserts the fit/val thread
+sets are disjoint.
+
+> The numbers in the README were produced by models trained on the **full**
+> `train` split and evaluated on `dev` (= `test`), so they are already held-out
+> test numbers. The `fit`/`val` protocol above formalises model selection for
+> re-runs; if you plug in the official RumourEval test set, point
+> `--split test` at it.
+
 ## Evaluation protocol
 
 `evaluate.py` renders each example with the chat template, greedy-decodes a

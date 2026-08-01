@@ -28,8 +28,9 @@ from __future__ import annotations
 
 import json
 import os
+import random
 from collections import Counter, defaultdict
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 STANCE_KEYWORDS = [
     "confirmed", "confirm", "true", "false", "fake", "real",
@@ -263,3 +264,54 @@ def summarize(dataset: List[dict]) -> dict:
                 "valid_ti_frac": round(sum(d["valid_ti"] for d in sub) / len(sub), 3),
             }
     return summary
+
+
+def train_val_split(dataset: List[dict], val_fraction: float = 0.1,
+                    seed: int = 42) -> Tuple[List[dict], List[dict]]:
+    """Deterministic **thread-level** train/validation split of the training data.
+
+    Why thread-level and not example-level: the context conditions (``useful``,
+    ``conflicting``, ``mixed``, ``irrelevant``) splice in text from *other*
+    replies in the same thread. If two replies from one thread landed in
+    different folds, validation inputs would contain text the model saw while
+    fitting -- context leakage. Splitting whole threads removes that path.
+
+    Only ``split == 'train'`` rows are partitioned; the ``dev`` split is left
+    untouched to serve as the held-out **test** set (touched once, at the end).
+    Threads are shuffled with a fixed ``seed`` so the split is reproducible.
+
+    Returns ``(fit, val)`` lists of example dicts.
+    """
+    train_rows = [d for d in dataset if d["split"] == "train"]
+    thread_ids = sorted({d["thread_id"] for d in train_rows})
+    rng = random.Random(seed)
+    rng.shuffle(thread_ids)
+    n_val = max(1, int(round(len(thread_ids) * val_fraction)))
+    val_threads = set(thread_ids[:n_val])
+    fit = [d for d in train_rows if d["thread_id"] not in val_threads]
+    val = [d for d in train_rows if d["thread_id"] in val_threads]
+    return fit, val
+
+
+def split_manifest(dataset: List[dict], val_fraction: float = 0.1,
+                   seed: int = 42) -> dict:
+    """Human-readable manifest of the 3-way protocol (fit / val / test)."""
+    fit, val = train_val_split(dataset, val_fraction, seed)
+    test = [d for d in dataset if d["split"] == "dev"]
+
+    def describe(rows: List[dict]) -> dict:
+        return {
+            "n": len(rows),
+            "n_threads": len({d["thread_id"] for d in rows}),
+            "labels": dict(Counter(d["label"] for d in rows)),
+        }
+
+    return {
+        "seed": seed,
+        "val_fraction": val_fraction,
+        "note": "test == the RumourEval dev split (held out); fit/val are a "
+                "thread-level partition of train to avoid context leakage.",
+        "fit": describe(fit),
+        "val": describe(val),
+        "test": describe(test),
+    }

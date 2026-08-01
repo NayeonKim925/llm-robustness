@@ -34,6 +34,31 @@ def build_dataset_main() -> None:
               f"valid_cc={info['valid_cc_frac']}  valid_ti={info['valid_ti_frac']}")
 
 
+def splits_main() -> None:
+    ap = argparse.ArgumentParser(
+        description="Emit the deterministic train/val/test split manifest.")
+    ap.add_argument("--conditions-file",
+                    default="rumoureval-2019-training-data/context_conditions.json")
+    ap.add_argument("--val-fraction", type=float, default=0.1)
+    ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--out", default="results/split_manifest.json")
+    args = ap.parse_args()
+
+    import os
+    if not os.path.exists(args.conditions_file):
+        raise SystemExit(f"{args.conditions_file} not found; run `make dataset` first.")
+    dataset = json.load(open(args.conditions_file))
+    manifest = data.split_manifest(dataset, args.val_fraction, args.seed)
+    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
+    json.dump(manifest, open(args.out, "w"), indent=2)
+
+    print(f"3-way split (seed {manifest['seed']}, val_fraction {manifest['val_fraction']}):")
+    for fold in ("fit", "val", "test"):
+        m = manifest[fold]
+        print(f"  {fold:5s} n={m['n']:5d}  threads={m['n_threads']:4d}  labels={m['labels']}")
+    print(f"Wrote {args.out}")
+
+
 def analyze_main() -> None:
     ap = argparse.ArgumentParser(description="Recompute metrics + baselines from dumps.")
     ap.add_argument("--results-dir", default="results")
