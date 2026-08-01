@@ -1,0 +1,76 @@
+{
+  "qwen1.5b_ft": {
+    "reply_only_vs_useful": {
+      "b": 175,
+      "c": 63,
+      "statistic": 51.76890756302521,
+      "p_value": 6.24326951300726e-13,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_irrelevant": {
+      "b": 177,
+      "c": 40,
+      "statistic": 85.23502304147465,
+      "p_value": 2.649275537624888e-20,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_conflicting": {
+      "b": 165,
+      "c": 44,
+      "statistic": 68.89952153110048,
+      "p_value": 1.0360995721952493e-16,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_mixed": {
+      "b": 177,
+      "c": 47,
+      "statistic": 74.29017857142857,
+      "p_value": 6.7438191793397894e-18,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_lexical": {
+      "b": 94,
+      "c": 77,
+      "statistic": 1.4970760233918128,
+      "p_value": 0.22112181216249216,
+      "method": "chi2_continuity"
+    }
+  },
+  "qwen1.5b_adv": {
+    "reply_only_vs_useful": {
+      "b": 297,
+      "c": 550,
+      "statistic": 74.97520661157024,
+      "p_value": 4.766624965673241e-18,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_irrelevant": {
+      "b": 305,
+      "c": 582,
+      "statistic": 85.880496054115,
+      "p_value": 1.9114478208755432e-20,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_conflicting": {
+      "b": 276,
+      "c": 524,
+      "statistic": 76.26125,
+      "p_value": 2.485128625253976e-18,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_mixed": {
+      "b": 318,
+      "c": 616,
+      "statistic": 94.44218415417559,
+      "p_value": 2.5235657174676165e-22,
+      "method": "chi2_continuity"
+    },
+    "reply_only_vs_lexical": {
+      "b": 143,
+      "c": 656,
+      "statistic": 328.090112640801,
+      "p_value": 2.5047649638506566e-73,
+      "method": "chi2_continuity"
+    }
+  }
+}

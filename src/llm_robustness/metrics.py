@@ -133,6 +133,52 @@ def expected_calibration_error(confidences: Sequence[float], correct: Sequence[i
     return ece
 
 
+def mcnemar_test(correct_a: Sequence[int], correct_b: Sequence[int],
+                 continuity: bool = True) -> Dict[str, float]:
+    """Paired McNemar test between two classifiers on the *same* examples.
+
+    ``correct_a`` / ``correct_b`` are aligned 0/1 correctness indicators (same
+    example at each index). Returns the discordant counts, the chi-square
+    statistic (with continuity correction by default) and a p-value. For small
+    discordant totals (b + c < 25) an exact two-sided binomial p-value is used
+    instead, which is the standard recommendation.
+    """
+    if len(correct_a) != len(correct_b):
+        raise ValueError("inputs must be aligned and equal length")
+    b = sum(int(a == 1 and bb == 0) for a, bb in zip(correct_a, correct_b))
+    c = sum(int(a == 0 and bb == 1) for a, bb in zip(correct_a, correct_b))
+    n_disc = b + c
+
+    if n_disc == 0:
+        return {"b": b, "c": c, "statistic": 0.0, "p_value": 1.0, "method": "none"}
+
+    if n_disc < 25:
+        # Exact two-sided binomial test, p = 0.5.
+        k = min(b, c)
+        tail = sum(_binom_pmf(n_disc, i, 0.5) for i in range(0, k + 1))
+        p = min(1.0, 2.0 * tail)
+        return {"b": b, "c": c, "statistic": float(min(b, c)),
+                "p_value": p, "method": "exact_binomial"}
+
+    diff = abs(b - c) - (1.0 if continuity else 0.0)
+    stat = (diff * diff) / n_disc
+    return {"b": b, "c": c, "statistic": stat,
+            "p_value": _chi2_sf_1df(stat), "method": "chi2_continuity"}
+
+
+def _binom_pmf(n: int, k: int, p: float) -> float:
+    from math import comb
+    return comb(n, k) * (p ** k) * ((1 - p) ** (n - k))
+
+
+def _chi2_sf_1df(x: float) -> float:
+    """Survival function of chi-square with 1 dof = erfc(sqrt(x/2))."""
+    import math
+    if x <= 0:
+        return 1.0
+    return math.erfc(math.sqrt(x / 2.0))
+
+
 def confidence_when_right_vs_wrong(confidences: Sequence[float],
                                    correct: Sequence[int]) -> Tuple[float, float]:
     """Mean confidence on correct vs incorrect predictions.

@@ -47,6 +47,38 @@ def test_ece_detects_overconfidence():
     assert abs(ece - (0.99 - 0.25)) < 1e-6
 
 
+def test_mcnemar_no_discordance_is_nonsignificant():
+    a = [1, 1, 0, 0]
+    res = metrics.mcnemar_test(a, a)  # identical -> b == c == 0
+    assert res["b"] == 0 and res["c"] == 0
+    assert res["p_value"] == 1.0
+
+
+def test_mcnemar_all_discordant_one_direction_is_significant():
+    # A right everywhere, B wrong everywhere on 30 examples -> strong effect.
+    a = [1] * 30
+    b = [0] * 30
+    res = metrics.mcnemar_test(a, b)
+    assert res["b"] == 30 and res["c"] == 0
+    assert res["p_value"] < 0.001
+
+
+def test_mcnemar_exact_used_for_small_samples():
+    a = [1, 1, 1, 0, 0]
+    b = [0, 0, 0, 0, 0]  # b=3, c=0, n_disc=3 < 25 -> exact binomial
+    res = metrics.mcnemar_test(a, b)
+    assert res["method"] == "exact_binomial"
+    assert abs(res["p_value"] - 2 * (0.5 ** 3)) < 1e-9  # 2 * P(X<=0) = 2*(1/8)
+
+
+def test_mcnemar_requires_equal_length():
+    try:
+        metrics.mcnemar_test([1, 0], [1])
+        assert False, "expected ValueError"
+    except ValueError:
+        pass
+
+
 def test_confidence_right_vs_wrong():
     confs = [0.9, 0.8, 0.7, 0.6]
     correct = [1, 1, 0, 0]
