@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import os
 import random
-from dataclasses import dataclass, field, asdict
-from typing import List, Optional
+from dataclasses import asdict, dataclass, field
+from typing import List
 
 try:  # optional; config must import even in a bare stdlib environment
     import yaml

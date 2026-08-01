@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: lint + test (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package (CPU extras only)
+        run: pip install -e ".[viz,dev]"
+
+      - name: Lint (ruff)
+        run: ruff check src/ scripts/ tests/
+
+      - name: Unit tests (pytest)
+        run: pytest -q
+
+      # Prove the analysis + figure pipeline reproduces from a clean checkout,
+      # using only the committed prediction dumps (no GPU, no raw corpus).
+      - name: Analysis pipeline runs end-to-end
+        run: |
+          llmr-analyze
+          llmr-significance

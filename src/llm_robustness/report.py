@@ -16,7 +16,7 @@ from __future__ import annotations
 import json
 import os
 from collections import Counter
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 from . import labels, metrics
 
@@ -109,10 +109,14 @@ def write_baseline_table(all_cls: dict, out_dir: str) -> str:
 def run_analysis(results_dir: str = "results") -> Tuple[dict, dict]:
     """Compute + persist classification and calibration analyses; return both."""
     os.makedirs(results_dir, exist_ok=True)
-    all_cls = {m: analyze_classification(p) for m, p in CLASSIFICATION_DUMPS if os.path.exists(p)}
-    all_conf = {m: analyze_confidence(p) for m, p in CONFIDENCE_DUMPS if os.path.exists(p)}
-    json.dump(all_cls, open(os.path.join(results_dir, "classification_analysis.json"), "w"), indent=2)
-    json.dump(all_conf, open(os.path.join(results_dir, "calibration_analysis.json"), "w"), indent=2)
+    all_cls = {m: analyze_classification(p)
+               for m, p in CLASSIFICATION_DUMPS if os.path.exists(p)}
+    all_conf = {m: analyze_confidence(p)
+                for m, p in CONFIDENCE_DUMPS if os.path.exists(p)}
+    with open(os.path.join(results_dir, "classification_analysis.json"), "w") as f:
+        json.dump(all_cls, f, indent=2)
+    with open(os.path.join(results_dir, "calibration_analysis.json"), "w") as f:
+        json.dump(all_conf, f, indent=2)
     write_baseline_table(all_cls, results_dir)
     return all_cls, all_conf
 

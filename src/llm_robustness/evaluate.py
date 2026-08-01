@@ -102,7 +102,7 @@ def run(base_model: str, adapter_dir: Optional[str], conditions_file: str,
     with open(conditions_file) as f:
         dataset = [d for d in json.load(f) if d["split"] == split]
     model, tokenizer = load_model(base_model, adapter_dir)
-    results = evaluate_all(model, tokenizer, dataset, conditions, max_new_tokens)
+    results = evaluate_all(model, tokenizer, dataset, CONDITIONS, max_new_tokens)
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w") as f:
         json.dump(results, f, indent=2)

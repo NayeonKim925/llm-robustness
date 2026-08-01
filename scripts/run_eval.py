@@ -17,8 +17,8 @@ from __future__ import annotations
 
 import argparse
 
-from llm_robustness.config import Config
 from llm_robustness import evaluate
+from llm_robustness.config import Config
 
 
 def main() -> None:

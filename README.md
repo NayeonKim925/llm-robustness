@@ -1,5 +1,8 @@
 # LLM Robustness under Context Perturbation (RumourEval-2019)
 
+[![CI](https://github.com/NayeonKim925/llm-robustness/actions/workflows/ci.yml/badge.svg)](https://github.com/NayeonKim925/llm-robustness/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.9%20%7C%203.12-blue)
+
 A controlled study of how small instruction-tuned language models
 (Qwen2.5-0.5B / 1.5B / 3B) classify **rumour stance** (support / deny / query /
 comment) when the surrounding conversational context is varied from *helpful*

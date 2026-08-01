@@ -186,7 +186,8 @@ def build_conditions(target: dict, thread_records: List[dict],
     # irrelevant: on-topic stance-free comment with lowest lexical overlap
     ti_candidates = [
         r for r in thread_records
-        if r["label"] == "comment" and r["reply_id"] not in (target["reply_id"], target["parent_id"])
+        if r["label"] == "comment"
+        and r["reply_id"] not in (target["reply_id"], target["parent_id"])
         and not r["is_source"] and not has_stance_keyword(r["text"])
     ]
     if ti_candidates:

@@ -157,7 +157,8 @@ def adversarial_lexical_effect(analysis: Dict, out_path: str) -> str:
     ax.set_xticks(list(x), [lbl for _, lbl in pairs])
     ax.set_ylabel("accuracy (dev)")
     ax.set_ylim(0, 1)
-    ax.set_title("The lexical distractor hurts zero-shot but not adversarial-FT\n(3B: 0.628→0.598 vs 0.825→0.851)")
+    ax.set_title("The lexical distractor hurts zero-shot but not adversarial-FT\n"
+                 "(3B: 0.628→0.598 vs 0.825→0.851)")
     ax.legend(frameon=False, fontsize=9)
     fig.tight_layout()
     fig.savefig(out_path, dpi=140)
@@ -208,7 +209,8 @@ def make_all(results_dir: str = "results", figures_dir: str = "figures") -> List
     made = [
         robustness_by_condition(cls, os.path.join(figures_dir, "robustness_by_condition.png")),
         per_class_f1_heatmap(cls, os.path.join(figures_dir, "per_class_f1_heatmap.png")),
-        adversarial_lexical_effect(cls, os.path.join(figures_dir, "adversarial_lexical_effect.png")),
+        adversarial_lexical_effect(
+            cls, os.path.join(figures_dir, "adversarial_lexical_effect.png")),
     ]
     if calib:
         made.append(reliability_original_flawed(

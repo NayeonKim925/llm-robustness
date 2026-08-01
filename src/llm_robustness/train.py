@@ -24,8 +24,8 @@ import os
 from collections import Counter
 from typing import List
 
-from .config import Config, set_seed
 from . import prompts
+from .config import Config, set_seed
 
 
 def _load_split(conditions_file: str, split: str) -> List[dict]:

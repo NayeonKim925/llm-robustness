@@ -57,7 +57,7 @@ def score_one(model, tokenizer, context_text: str, tok_ids: Dict[str, int]) -> D
     inputs = tokenizer(text, return_tensors="pt").to(model.device)
     with torch.no_grad():
         logits = model(**inputs).logits[0, -1, :]
-    label_logits = torch.tensor([logits[tok_ids[l]] for l in labels.LABELS])
+    label_logits = torch.tensor([logits[tok_ids[lab]] for lab in labels.LABELS])
     probs = F.softmax(label_logits, dim=0).tolist()
 
     order = sorted(range(len(probs)), key=lambda i: probs[i], reverse=True)

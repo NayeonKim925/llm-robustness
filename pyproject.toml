@@ -27,7 +27,7 @@ gpu = [                                           # training / eval / calibratio
     "trl>=0.9",
     "accelerate>=0.30",
 ]
-dev = ["pytest>=7.0"]
+dev = ["pytest>=7.0", "ruff>=0.5"]
 
 [project.urls]
 Repository = "https://github.com/NayeonKim925/llm-robustness"
@@ -47,3 +47,9 @@ version = { attr = "llm_robustness.__version__" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]  # pycodestyle, pyflakes, warnings, import-sort

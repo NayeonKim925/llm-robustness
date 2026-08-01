@@ -13,6 +13,7 @@ help:
 	@echo "  analyze    recompute metrics + baselines from dumps (CPU)"
 	@echo "  figures    render result figures from the analysis JSON (CPU)"
 	@echo "  significance  paired McNemar tests across conditions (CPU)"
+	@echo "  lint       ruff check src/ scripts/ tests/ (CPU)"
 	@echo "  test       run unit tests (CPU)"
 	@echo "  train      LoRA fine-tune (GPU)   e.g. make train OUT=result/qwen_1.5b_ft"
 	@echo "  eval       generation eval (GPU)  e.g. make eval MODEL=Qwen/Qwen2.5-3B-Instruct OUT=results/eval.json"
@@ -32,6 +33,9 @@ figures:
 
 significance:
 	$(PY) scripts/significance.py
+
+lint:
+	ruff check src/ scripts/ tests/
 
 test:
 	$(PY) -m pytest tests/ -q
