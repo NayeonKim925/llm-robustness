@@ -1,0 +1,35 @@
+# Default experiment configuration. Override any field on the command line or
+# by copying this file. Fields map 1:1 to llm_robustness.config.Config.
+
+# --- data ---
+data_root: rumoureval-2019-training-data
+conditions_file: rumoureval-2019-training-data/context_conditions.json
+train_split: train
+eval_split: dev
+
+# --- model / LoRA ---
+base_model: Qwen/Qwen2.5-1.5B-Instruct
+lora_r: 8
+lora_alpha: 16
+lora_dropout: 0.05
+target_modules: [q_proj, v_proj]
+
+# --- training ---
+num_train_epochs: 3
+learning_rate: 0.0002
+per_device_train_batch_size: 8
+gradient_accumulation_steps: 2
+warmup_steps: 100
+imbalance_strategy: weighted_sampler   # none | weighted_sampler
+train_condition: useful                # context condition to train on
+adversarial: false                     # true -> also train on perturbed contexts
+
+# --- evaluation ---
+max_new_tokens: 10
+calibration_bins: 10
+
+# --- io / reproducibility ---
+output_dir: result
+results_dir: results
+figures_dir: figures
+seed: 42

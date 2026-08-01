@@ -1,2 +1,35 @@
-checkpoint-*
-final/
+# ---------------------------------------------------------------------------
+# Large / external / regenerable artifacts. Kept out of git on purpose.
+# See README ("Data" and "Reproducing") for how to obtain / regenerate them.
+# ---------------------------------------------------------------------------
+
+# Raw RumourEval-2019 corpus (download separately; contains redistributed
+# tweet text). Regenerate the processed dataset with `make dataset`.
+rumoureval-2019-training-data/
+
+# Trained model weights, LoRA adapters, optimizer/scheduler state, tokenizer
+# copies. Regenerate with `make train`.
+result/
+*.safetensors
+*.pt
+*.bin
+
+# Regenerable outputs (produced by `make analyze`). The distilled summaries in
+# results/*.json|*.csv and the raw prediction dumps in results/raw_predictions/
+# ARE tracked; only stray top-level outputs are ignored here.
+/confidence_comparison_*.png
+/confidence_summary_*.csv
+
+# ---------------------------------------------------------------------------
+# Python / Jupyter / tooling
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+.DS_Store

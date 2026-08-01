@@ -1,0 +1,514 @@
+{
+  "qwen0.5B-zeroshot": {
+    "reply_only": {
+      "n": 1447,
+      "accuracy": 0.09606081548030408,
+      "macro_f1": 0.08001950126888474,
+      "per_class_f1": [
+        0.0,
+        0.12780656303972365,
+        0.19227144203581528,
+        0.0
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 500,
+        "query": 947,
+        "comment": 0
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 2
+    },
+    "useful": {
+      "n": 1446,
+      "accuracy": 0.08990318118948824,
+      "macro_f1": 0.07413477038362674,
+      "per_class_f1": [
+        0.0,
+        0.11721611721611722,
+        0.17932296431838976,
+        0.0
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 467,
+        "query": 979,
+        "comment": 0
+      },
+      "baseline_majority_acc": 0.8160442600276625,
+      "baseline_majority_macro_f1": 0.22467631378522468,
+      "baseline_random_acc": 0.6701244813278008,
+      "n_distinct_predicted_classes": 2
+    },
+    "irrelevant": {
+      "n": 1447,
+      "accuracy": 0.07947477539737388,
+      "macro_f1": 0.06950304308818894,
+      "per_class_f1": [
+        0.0,
+        0.12994350282485875,
+        0.14806866952789702,
+        0.0
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 629,
+        "query": 818,
+        "comment": 0
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 2
+    },
+    "conflicting": {
+      "n": 1243,
+      "accuracy": 0.08849557522123894,
+      "macro_f1": 0.07797340998922027,
+      "per_class_f1": [
+        0.0,
+        0.1553719008264463,
+        0.15652173913043477,
+        0.0
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 537,
+        "query": 706,
+        "comment": 0
+      },
+      "baseline_majority_acc": 0.82864038616251,
+      "baseline_majority_macro_f1": 0.22657281126264847,
+      "baseline_random_acc": 0.7135961383748994,
+      "n_distinct_predicted_classes": 2
+    },
+    "mixed": {
+      "n": 1243,
+      "accuracy": 0.08688656476267095,
+      "macro_f1": 0.07515151515151515,
+      "per_class_f1": [
+        0.0,
+        0.13333333333333333,
+        0.16727272727272727,
+        0.0
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 517,
+        "query": 726,
+        "comment": 0
+      },
+      "baseline_majority_acc": 0.82864038616251,
+      "baseline_majority_macro_f1": 0.22657281126264847,
+      "baseline_random_acc": 0.7135961383748994,
+      "n_distinct_predicted_classes": 2
+    },
+    "lexical": {
+      "n": 1446,
+      "accuracy": 0.09336099585062241,
+      "macro_f1": 0.0817390539827677,
+      "per_class_f1": [
+        0.0,
+        0.15867768595041323,
+        0.16827852998065762,
+        0.0
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 526,
+        "query": 920,
+        "comment": 0
+      },
+      "baseline_majority_acc": 0.8160442600276625,
+      "baseline_majority_macro_f1": 0.22467631378522468,
+      "baseline_random_acc": 0.6701244813278008,
+      "n_distinct_predicted_classes": 2
+    }
+  },
+  "qwen1.5B-adv-FT": {
+    "reply_only": {
+      "n": 1440,
+      "accuracy": 0.8229166666666666,
+      "macro_f1": 0.3310332119972323,
+      "per_class_f1": [
+        0.0,
+        0.0,
+        0.423076923076923,
+        0.9010559249120061
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 15,
+        "query": 42,
+        "comment": 1383
+      },
+      "baseline_majority_acc": 0.8152777777777778,
+      "baseline_majority_macro_f1": 0.22456006120887528,
+      "baseline_random_acc": 0.6680555555555555,
+      "n_distinct_predicted_classes": 3
+    },
+    "useful": {
+      "n": 1447,
+      "accuracy": 0.8479612992398065,
+      "macro_f1": 0.3946582701293263,
+      "per_class_f1": [
+        0.0,
+        0.07317073170731708,
+        0.5909090909090909,
+        0.9145532579008974
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 3,
+        "query": 62,
+        "comment": 1382
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    },
+    "irrelevant": {
+      "n": 1447,
+      "accuracy": 0.8458880442294402,
+      "macro_f1": 0.384438695722389,
+      "per_class_f1": [
+        0.0,
+        0.07317073170731708,
+        0.5508982035928144,
+        0.9136858475894245
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 3,
+        "query": 53,
+        "comment": 1391
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    },
+    "conflicting": {
+      "n": 1244,
+      "accuracy": 0.8536977491961415,
+      "macro_f1": 0.3670645485642438,
+      "per_class_f1": [
+        0.0,
+        0.028985507246376812,
+        0.5205479452054794,
+        0.918724741805119
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 1,
+        "query": 47,
+        "comment": 1196
+      },
+      "baseline_majority_acc": 0.8287781350482315,
+      "baseline_majority_macro_f1": 0.2265934065934066,
+      "baseline_random_acc": 0.6864951768488746,
+      "n_distinct_predicted_classes": 3
+    },
+    "mixed": {
+      "n": 1244,
+      "accuracy": 0.8496784565916399,
+      "macro_f1": 0.3648084403034898,
+      "per_class_f1": [
+        0.0,
+        0.05555555555555555,
+        0.48648648648648646,
+        0.9171917191719171
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 4,
+        "query": 49,
+        "comment": 1191
+      },
+      "baseline_majority_acc": 0.8287781350482315,
+      "baseline_majority_macro_f1": 0.2265934065934066,
+      "baseline_random_acc": 0.6864951768488746,
+      "n_distinct_predicted_classes": 3
+    },
+    "lexical": {
+      "n": 1447,
+      "accuracy": 0.8410504492052523,
+      "macro_f1": 0.367264954245133,
+      "per_class_f1": [
+        0.0,
+        0.048192771084337345,
+        0.509090909090909,
+        0.9117761368052856
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 4,
+        "query": 51,
+        "comment": 1392
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    }
+  },
+  "qwen3B-zeroshot": {
+    "reply_only": {
+      "n": 1447,
+      "accuracy": 0.6275051831375259,
+      "macro_f1": 0.34479865083182193,
+      "per_class_f1": [
+        0.02564102564102564,
+        0.16344086021505377,
+        0.4155844155844156,
+        0.7745283018867926
+      ],
+      "pred_distribution": {
+        "support": 5,
+        "deny": 386,
+        "query": 117,
+        "comment": 939
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 4
+    },
+    "useful": {
+      "n": 1447,
+      "accuracy": 0.6351071181755356,
+      "macro_f1": 0.37719630295168727,
+      "per_class_f1": [
+        0.07142857142857142,
+        0.2182628062360802,
+        0.4505928853754941,
+        0.7685009487666034
+      ],
+      "pred_distribution": {
+        "support": 11,
+        "deny": 370,
+        "query": 139,
+        "comment": 927
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 4
+    },
+    "irrelevant": {
+      "n": 1447,
+      "accuracy": 0.6973047684865239,
+      "macro_f1": 0.39516574831630025,
+      "per_class_f1": [
+        0.09876543209876543,
+        0.23796033994334279,
+        0.4247787610619469,
+        0.819158460161146
+      ],
+      "pred_distribution": {
+        "support": 8,
+        "deny": 274,
+        "query": 112,
+        "comment": 1053
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 4
+    },
+    "conflicting": {
+      "n": 1244,
+      "accuracy": 0.7001607717041801,
+      "macro_f1": 0.3623420028436476,
+      "per_class_f1": [
+        0.0,
+        0.21245421245421245,
+        0.41295546558704455,
+        0.8239583333333333
+      ],
+      "pred_distribution": {
+        "support": 2,
+        "deny": 205,
+        "query": 148,
+        "comment": 889
+      },
+      "baseline_majority_acc": 0.8287781350482315,
+      "baseline_majority_macro_f1": 0.2265934065934066,
+      "baseline_random_acc": 0.6864951768488746,
+      "n_distinct_predicted_classes": 4
+    },
+    "mixed": {
+      "n": 1244,
+      "accuracy": 0.6438906752411575,
+      "macro_f1": 0.33595304951495814,
+      "per_class_f1": [
+        0.0,
+        0.1833810888252149,
+        0.3781512605042016,
+        0.782279848730416
+      ],
+      "pred_distribution": {
+        "support": 4,
+        "deny": 281,
+        "query": 139,
+        "comment": 820
+      },
+      "baseline_majority_acc": 0.8287781350482315,
+      "baseline_majority_macro_f1": 0.2265934065934066,
+      "baseline_random_acc": 0.6864951768488746,
+      "n_distinct_predicted_classes": 4
+    },
+    "lexical": {
+      "n": 1447,
+      "accuracy": 0.598479612992398,
+      "macro_f1": 0.33868257271290625,
+      "per_class_f1": [
+        0.0,
+        0.15355805243445692,
+        0.4565217391304348,
+        0.7446504992867333
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 455,
+        "query": 70,
+        "comment": 922
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    }
+  },
+  "qwen3B-adv-FT": {
+    "reply_only": {
+      "n": 1447,
+      "accuracy": 0.8251554941257775,
+      "macro_f1": 0.29149988226983753,
+      "per_class_f1": [
+        0.0,
+        0.0,
+        0.26277372262773724,
+        0.9032258064516129
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 1,
+        "query": 23,
+        "comment": 1423
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    },
+    "useful": {
+      "n": 1447,
+      "accuracy": 0.8500345542501728,
+      "macro_f1": 0.4011771865032735,
+      "per_class_f1": [
+        0.0,
+        0.047619047619047616,
+        0.6413043478260869,
+        0.9157853505679593
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 5,
+        "query": 70,
+        "comment": 1372
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    },
+    "irrelevant": {
+      "n": 1447,
+      "accuracy": 0.8451969592259848,
+      "macro_f1": 0.3731537314305767,
+      "per_class_f1": [
+        0.0,
+        0.024999999999999998,
+        0.5542168674698795,
+        0.9133980582524271
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 1,
+        "query": 52,
+        "comment": 1394
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    },
+    "conflicting": {
+      "n": 1244,
+      "accuracy": 0.8577170418006431,
+      "macro_f1": 0.3798559110236934,
+      "per_class_f1": [
+        0.0,
+        0.056338028169014086,
+        0.5416666666666666,
+        0.921418949259093
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 3,
+        "query": 45,
+        "comment": 1196
+      },
+      "baseline_majority_acc": 0.8287781350482315,
+      "baseline_majority_macro_f1": 0.2265934065934066,
+      "baseline_random_acc": 0.6864951768488746,
+      "n_distinct_predicted_classes": 3
+    },
+    "mixed": {
+      "n": 1244,
+      "accuracy": 0.8520900321543409,
+      "macro_f1": 0.3589576666874822,
+      "per_class_f1": [
+        0.0,
+        0.028985507246376812,
+        0.48920863309352514,
+        0.9176365264100269
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 1,
+        "query": 40,
+        "comment": 1203
+      },
+      "baseline_majority_acc": 0.8287781350482315,
+      "baseline_majority_macro_f1": 0.2265934065934066,
+      "baseline_random_acc": 0.6864951768488746,
+      "n_distinct_predicted_classes": 3
+    },
+    "lexical": {
+      "n": 1447,
+      "accuracy": 0.8514167242570836,
+      "macro_f1": 0.4035582316380245,
+      "per_class_f1": [
+        0.0,
+        0.02469135802469136,
+        0.6733668341708543,
+        0.9161747343565525
+      ],
+      "pred_distribution": {
+        "support": 0,
+        "deny": 2,
+        "query": 85,
+        "comment": 1360
+      },
+      "baseline_majority_acc": 0.816171389080857,
+      "baseline_majority_macro_f1": 0.22469558599695585,
+      "baseline_random_acc": 0.6703524533517623,
+      "n_distinct_predicted_classes": 3
+    }
+  }
+}

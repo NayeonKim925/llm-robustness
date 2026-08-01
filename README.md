@@ -1,58 +1,185 @@
+# LLM Robustness under Context Perturbation (RumourEval-2019)
+
+A controlled study of how small instruction-tuned language models
+(Qwen2.5-0.5B / 1.5B / 3B) classify **rumour stance** (support / deny / query /
+comment) when the surrounding conversational context is varied from *helpful*
+to *adversarial*. The project fine-tunes LoRA adapters, evaluates them across
+six context conditions, and measures both accuracy and **calibration**.
+
+> **Scope.** This is an undergraduate research/engineering project on
+> RumourEval-2019 (SemEval-2019 Task 7, subtask A). The goal is a rigorous,
+> reproducible pipeline and an honest read of the results — not a publication.
+
 ---
-base_model: Qwen/Qwen2.5-3B-Instruct
-library_name: transformers
-model_name: qwen_3b_adv
-tags:
-- generated_from_trainer
-- sft
-- trl
-licence: license
+
+## TL;DR — what actually holds
+
+All numbers are recomputed from the committed prediction dumps by
+`scripts/analyze_results.py`, **always next to trivial baselines**. On the dev
+split the `comment` class alone is **81.6%** of examples, so the majority-class
+baseline scores **0.816 accuracy** — every model number must be read against
+that.
+
+| Model (generation eval, chat-template) | acc (reply_only) | acc under *lexical* distractor | comment F1 | classes predicted |
+|---|---|---|---|---|
+| Qwen0.5B zero-shot | 0.096 | 0.093 | 0.00 | 2 → **class collapse** |
+| Qwen3B zero-shot | 0.628 | **0.598** (worst) | 0.77 | 4 |
+| Qwen1.5B adversarial-FT | 0.823 | 0.841 | 0.90 | 3 |
+| Qwen3B adversarial-FT | 0.825 | **0.851** | 0.90 | 3 |
+
+Three findings:
+
+1. **Zero-shot small models are unreliable and imbalance-sensitive.** The 0.5B
+   model collapses to 1–2 classes and never predicts the majority class
+   (`comment` F1 = 0.00). The 3B model is reasonable but its **weakest point is
+   exactly the adversarial `lexical` distractor** (0.628 → 0.598).
+2. **Adversarial fine-tuning buys robustness.** The adv-FT models stay at
+   0.82–0.86 accuracy across *all* six conditions, and the 3B model’s lexical
+   vulnerability closes almost entirely (**0.598 → 0.851**). Macro-F1 stays
+   modest (~0.30–0.40) because minority stances remain hard under imbalance.
+3. **The original “miscalibration” finding was a measurement artifact.** It came
+   from a confidence-scoring pipeline with three bugs (below). The honest status
+   of the calibration claim is *“not yet established — re-run with the corrected
+   `calibrate.py`.”* See [`docs/findings.md`](docs/findings.md).
+
+The value of this repo is as much the **diagnosis of its own failure modes** as
+the positive results. That story is written up in
+[`docs/findings.md`](docs/findings.md).
+
 ---
 
-# Model Card for qwen_3b_adv
+## Research question & experimental design
 
-This model is a fine-tuned version of [Qwen/Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct).
-It has been trained using [TRL](https://github.com/huggingface/trl).
+**Does adding context to a stance classifier help, and does *adversarial*
+context hurt — and can adversarial fine-tuning restore robustness?**
 
-## Quick start
+Each labelled reply is rendered under **six context conditions** (built in
+`src/llm_robustness/data.py`):
 
-```python
-from transformers import pipeline
+| Condition | Context supplied to the model |
+|---|---|
+| `reply_only` | the target reply only (no context) |
+| `useful` | source rumour + the direct parent reply |
+| `irrelevant` | source + an on-topic but stance-free comment (lowest lexical overlap) |
+| `conflicting` | source + a *real* reply taking the opposing stance |
+| `mixed` | source + parent + a conflicting reply |
+| `lexical` | a hard-coded distractor sentence asserting the **opposite** of the true stance (a label-aware adversarial stress test) |
 
-question = "If you had a time machine, but could only go to the past or the future once and never return, which would you choose and why?"
-generator = pipeline("text-generation", model="None", device="cuda")
-output = generator([{"role": "user", "content": question}], max_new_tokens=128, return_full_text=False)[0]
-print(output["generated_text"])
+This controlled-ablation design is the core idea: the same target reply is held
+fixed while only the *type* of surrounding context changes, so accuracy
+differences are attributable to the context manipulation.
+
+---
+
+## Repository structure
+
+```
+llm-robustness/
+├── README.md                     # this file
+├── requirements.txt              # pinned dependency ranges
+├── Makefile                      # reproducible entry points
+├── configs/experiment.yaml       # all paths, hyper-params, seed
+├── src/llm_robustness/           # importable package (single source of truth)
+│   ├── labels.py                 #   robust, deterministic label parsing
+│   ├── metrics.py                #   F1 / accuracy / baselines / ECE  (pure stdlib)
+│   ├── data.py                   #   RumourEval parsing + 6 conditions
+│   ├── prompts.py                #   chat formatting (train == inference)
+│   ├── evaluate.py               #   generation eval  (GPU)
+│   ├── calibrate.py              #   corrected calibration  (GPU)
+│   └── train.py                  #   LoRA SFT + class-imbalance handling  (GPU)
+├── scripts/                      # thin CLIs over the package
+│   ├── build_dataset.py          #   raw trees -> context_conditions.json  (CPU)
+│   ├── analyze_results.py        #   dumps -> tables + figures  (CPU)
+│   ├── run_finetune.py / run_eval.py / run_calibration.py   (GPU)
+├── tests/                        # unit tests for labels + metrics  (CPU)
+├── notebooks/                    # original exploratory notebooks (record of work)
+├── results/                      # distilled metrics + raw prediction dumps
+│   └── raw_predictions/          #   the GPU-produced prediction files
+├── figures/                      # generated plots
+└── docs/                         # methodology + honest findings write-up
 ```
 
-## Training procedure
+Model weights and the raw corpus are **not** committed (see
+[Data](#data) / [`.gitignore`](.gitignore)); everything needed to *reproduce*
+them is.
 
- 
+---
 
+## Reproducing
 
+CPU-only steps need just `PyYAML` + `matplotlib`; training/eval need a CUDA GPU.
 
-This model was trained with SFT.
+```bash
+make setup        # pip install -r requirements.txt
 
-### Framework versions
+# --- CPU, no GPU required ---
+make test         # unit tests for label parsing + metrics
+make dataset      # rebuild context_conditions.json from the raw corpus
+make analyze      # recompute all metrics/baselines/figures from the dumps
 
-- TRL: 1.4.0
-- Transformers: 5.7.0
-- Pytorch: 2.11.0
-- Datasets: 4.8.5
-- Tokenizers: 0.22.2
-
-## Citations
-
-
-
-Cite TRL as:
-    
-```bibtex
-@software{vonwerra2020trl,
-  title   = {{TRL: Transformers Reinforcement Learning}},
-  author  = {von Werra, Leandro and Belkada, Younes and Tunstall, Lewis and Beeching, Edward and Thrush, Tristan and Lambert, Nathan and Huang, Shengyi and Rasul, Kashif and Gallouédec, Quentin},
-  license = {Apache-2.0},
-  url     = {https://github.com/huggingface/trl},
-  year    = {2020}
-}
+# --- GPU ---
+make train  OUT=result/qwen_1.5b_ft                        # standard LoRA SFT
+python scripts/run_finetune.py --adversarial \
+       --output-dir result/qwen_1.5b_adv                   # adversarial FT
+make eval      MODEL=Qwen/Qwen2.5-3B-Instruct OUT=results/eval_3b_zeroshot.json
+make calibrate MODEL=Qwen/Qwen2.5-1.5B-Instruct \
+       ADAPTER=result/qwen_1.5b_ft/final OUT=results/cal_1.5b_ft.json
 ```
+
+Everything is seeded (`configs/experiment.yaml: seed`) and paths are
+configurable — no hard-coded home directories.
+
+## Data
+
+RumourEval-2019 (SemEval-2019 Task 7) is **not redistributed here** (it contains
+tweet text). Download it and place the trees under
+`rumoureval-2019-training-data/` so the layout matches
+`twitter-english/…`, `reddit-*-data/…`, `dev-key.json`, `train-key.json`; then
+run `make dataset`. The build is deterministic and yields 6,337 examples
+(train 4,890 / dev 1,447); a data card is written to `results/data_card.json`.
+
+---
+
+## Bugs found and fixed (why the calibration numbers changed)
+
+The original confidence/calibration pipeline reported “models are more confident
+when wrong.” Re-examination showed that result was driven by three bugs, now
+fixed in `src/llm_robustness/calibrate.py`:
+
+1. **Missing chat template.** The fine-tuned *chat* model was scored on a raw
+   `"Rumor: … Answer:"` string, not the `<|im_start|>…` format it was trained
+   on — a silent train/inference mismatch. Fixed: all formatting goes through
+   `prompts.build_inference_text`.
+2. **Wrong label-token ids.** Confidence read the logits of
+   `tokenizer.encode("deny")[0]` (the *no-leading-space* token), but in context
+   the model emits `" deny"`, a **different** BPE id (e.g. `deny` = 89963 vs
+   `" deny"` = 23101). Fixed: `calibrate.label_token_ids` scores the in-context
+   tokens and asserts they are distinct.
+3. **Train/dev contamination.** That pipeline’s “dev” set was built from a
+   merged key map and silently included training threads (≈5,669 rows vs the
+   true 1,447-example dev split). Fixed: splits are assigned per-`reply_id` in
+   `data.parse_rumoureval`.
+
+The buggy numbers are retained in `results/raw_predictions/confidence_results_*`
+and quantified (ECE ≈ 0.80) **only to document the artifact**; they are not
+evidence about model calibration.
+
+---
+
+## Limitations
+
+- Minority stances (support/deny/query) remain hard: adv-FT macro-F1 is
+  ~0.30–0.40 (published RumourEval-2019 systems reach ~0.5–0.6). The models
+  predict 3 of 4 classes.
+- The `lexical` condition is **label-aware** (it uses the gold stance to pick a
+  contradicting sentence), so it is a controlled stress test, not a realistic
+  attack.
+- The corrected `calibrate.py` has not yet been re-run on GPU here, so the
+  corrected calibration table is left to be filled in — see
+  [`docs/findings.md`](docs/findings.md).
+
+## References
+
+- Gorrell et al. *SemEval-2019 Task 7: RumourEval 2019.* SemEval 2019.
+- Hu et al. *LoRA: Low-Rank Adaptation of Large Language Models.* ICLR 2022.
+- Guo et al. *On Calibration of Modern Neural Networks.* ICML 2017. (ECE / reliability diagrams)
